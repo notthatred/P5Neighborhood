@@ -168,5 +168,12 @@ var Location = function(placeResult, marker) {
     this.openHours = "";
 };
 
-//Run the View Model
+/* Add a function to manage the content */
+var getInfoWindowContent = function(placeResult) {
+    var rating = (placeResult.rating !== null) ? placeResult.rating : "none";
+    var content = "<div id=" + placeResult.id + "><h4>" + placeResult.name + "</h4><p>" + placeResult.vicinity + ", 55801 - MN</p><p>rating:  " + rating + "</p></div>";
+    return content;
+};
+
+/* Run the View Model */
 ko.applyBindings(new BetweenViewModel());
