@@ -50,3 +50,26 @@ var BetweenViewModel = function() {
         var service = new google.maps.places.PlacesService(project.map);
         service.nearbySearch(request, project.locationCallback);
     };
+
+    /* Creating a locationCallback function to manage the data from search, adding the more detailed info retrieved from yp api.*/
+    project.locationCallback = function(results, status) {
+        var marker;
+        var location;
+        var tempTypes = [];
+        if (status == google.maps.places.PlacesServiceStatus.OK) {
+            for (var i = 0; i < results.length; i++) {
+                marker = project.createMarker(results[i]);
+                location = new Location(results[i], marker);
+                project.setYellowPageInfo(location);
+                project.locations.push(location);
+                tempTypes = tempTypes.concat(location.types.filter(function(item) {
+                    return tempTypes.indexOf(item) < 0;
+                }));
+            }
+            tempTypes.unshift("all");
+            ko.utils.arrayPushAll(project.locationTypes(), tempTypes);
+            project.locationTypes.sort();
+            project.locationTypes.valueHasMutated();
+            project.selectedLocationType("all");
+        }
+    };
