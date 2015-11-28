@@ -38,4 +38,15 @@ var BetweenViewModel = function() {
         project.map.setCenter(project.latlong);
     };
 
-    
+    /* Create an searchLocations function using Google Places Service. In the end the nearbySearch method from Google(Thnx bigG!) will call the locationCallback services when locations are retrieved.*/
+    project.searchLocations = function() {
+        var request = {
+            location: project.latlong,
+            radius: 500,
+            types: ['store', 'bar', 'food', 'restaurant', 'cafe', 'florist', 'hair_care', 'spa', 'pharmacy']
+
+        };
+
+        var service = new google.maps.places.PlacesService(project.map);
+        service.nearbySearch(request, project.locationCallback);
+    };
