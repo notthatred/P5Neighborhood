@@ -110,6 +110,36 @@ var BetweenViewModel = function() {
         }
     };
 
+    /* Create a function to set display or hide in the list view */
+    project.selectDetail = function(location) {
+        if (location.place_id === project.selectedPlaceId()) {
+            project.selectedPlaceId("");
+        } else
+            project.selectedPlaceId(location.place_id);
+    };
+
+    /* Create a function that make the ajax call to YP API and then update. If something goes wrong it gets an error message */
+    project.setYellowPageInfo = function(location) {
+        var requestTimeout = setTimeout(function() {
+            console.log("Oh No! Something went wrong...Bad Ajax request");
+        }, 9000);
+
+        $.ajax({
+            dataType: "jsonp",
+            url: "http://api2.yp.com/search-api/search/devapi/search?searchloc=duluth+MN&term=" + encodeURIComponent(location.name) + "&format=json&listingcount=1&key=c9fp548nz9",
+            success: function(response) {
+                var searchListing = response.searchResult.searchListings.searchListing[0];
+                location.primaryCategory = searchListing.primaryCategory;
+                location.address = location.vicinity;
+                location.phone = searchListing.phone;
+                location.moreInfoUrl = searchListing.moreInfoURL;
+                location.openHours = searchListing.openHours;
+
+                clearTimeout(requestTimeout);
+
+                project.locations.valueHasMutated();
+            }
+        });
+    };
+
     
-
-
