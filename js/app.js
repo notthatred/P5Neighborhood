@@ -73,3 +73,43 @@ var BetweenViewModel = function() {
             project.selectedLocationType("all");
         }
     };
+
+    /* Create a Marker from the Google Place Result.*/
+        project.createMarker = function(placeResult) {
+        var infoWindoContent = getInfoWindowContent(placeResult);
+        var marker = new google.maps.Marker({
+            map: project.map,
+            position: placeResult.geometry.location,
+            title: placeResult.name,
+        });
+
+        google.maps.event.addListener(marker, 'click', function() {
+            project.selectedPlaceId(placeResult.place_id);
+            project.map.panTo(marker.getPosition());
+            project.infowindow.setContent(infoWindoContent);
+            project.infowindow.open(project.map, marker);
+        });
+
+        return marker;
+    };
+
+    /* Create a function to filter the results found by categories */
+    project.filterMarkers = function() {
+        var location;
+        project.filteredLocations.removeAll();
+        for (var i = 0; i < project.locations().length; i++) {
+            location = project.locations()[i];
+            if ((location.types.indexOf(project.selectedLocationType()) == -1) && (project.selectedLocationType() != "all")) {
+                location.marker.setMap(null);
+            } else {
+                project.filteredLocations.push(location);
+                if (location.marker.map === null) {
+                    location.marker.setMap(project.map);
+                }
+            }
+        }
+    };
+
+    
+
+
