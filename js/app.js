@@ -142,4 +142,31 @@ var BetweenViewModel = function() {
         });
     };
 
-    
+    project.initializeMap();
+
+    project.selectedLocationType.subscribe(function() {
+        project.filterMarkers();
+        project.map.setCenter(project.latlong);
+    });
+
+    project.locations.subscribe(function() {
+        project.filterMarkers();
+    });
+};
+
+/* Location data model class */
+var Location = function(placeResult, marker) {
+    this.place_id = placeResult.place_id;
+    this.name = placeResult.name;
+    this.vicinity = placeResult.vicinity;
+    this.types = placeResult.types;
+    this.marker = marker;
+    this.phone = "";
+    this.address = "";
+    this.primaryCategory = "";
+    this.moreInfoUrl = "";
+    this.openHours = "";
+};
+
+//Run the View Model
+ko.applyBindings(new BetweenViewModel());
